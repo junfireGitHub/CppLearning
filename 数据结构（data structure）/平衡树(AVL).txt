@@ -1,0 +1,2 @@
+在平衡树(AVL)上进行查找的复杂度为O(logn)
+一个介绍AVL树的网址 http://www.cnblogs.com/skywang12345/p/3576969.html
