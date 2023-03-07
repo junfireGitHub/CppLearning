@@ -7,18 +7,11 @@
 
 using namespace std;
 
-/*¹Û²ìÕßÄ£Ê½£º¶¨Òå¶ÔÏó¼äµÄÒ»ÖÖÒ»¶Ô¶àµÄÒÀÀµ¹ØÏµ£¬µ±Ò»¸ö¶ÔÏóµÄ×´Ì¬·¢Éú¸Ä±äÊ±£¬
-ËùÓÐÒÀÀµÓÚËüµÄ¶ÔÏó¶¼µÃµ½Í¨Öª²¢±»×Ô¶¯¸üÐÂ¡£Ëü»¹ÓÐÁ½¸ö±ðÃû£¬ÒÀÀµ(Dependents)£¬
-·¢²¼-¶©ÔÄ(Publish-Subsrcibe)¡£¿ÉÒÔ¾Ù¸ö²©¿Í¶©ÔÄµÄÀý×Ó£¬µ±²©Ö÷·¢±íÐÂÎÄÕÂµÄÊ±ºò£¬
-¼´²©Ö÷×´Ì¬·¢ÉúÁË¸Ä±ä£¬ÄÇÐ©¶©ÔÄµÄ¶ÁÕß¾Í»áÊÕµ½Í¨Öª£¬È»ºó½øÐÐÏàÓ¦µÄ¶¯×÷£¬
-±ÈÈçÈ¥¿´ÎÄÕÂ£¬»òÕßÊÕ²ØÆðÀ´¡£²©Ö÷Óë¶ÁÕßÖ®¼ä´æÔÚÖÖÒ»¶Ô¶àµÄÒÀÀµ¹ØÏµ*/
-
-class Observer{
-public:
-	virtual void update(){};
-	virtual ~Observer(){};
-};
-
+/*è§‚å¯Ÿè€…æ¨¡å¼ï¼šå®šä¹‰å¯¹è±¡é—´çš„ä¸€ç§ä¸€å¯¹å¤šçš„ä¾èµ–å…³ç³»ï¼Œå½“ä¸€ä¸ªå¯¹è±¡çš„çŠ¶æ€å‘ç”Ÿæ”¹å˜æ—¶ï¼Œ
+æ‰€æœ‰ä¾èµ–äºŽå®ƒçš„å¯¹è±¡éƒ½å¾—åˆ°é€šçŸ¥å¹¶è¢«è‡ªåŠ¨æ›´æ–°ã€‚å®ƒè¿˜æœ‰ä¸¤ä¸ªåˆ«åï¼Œä¾èµ–(Dependents)ï¼Œ
+å‘å¸ƒ-è®¢é˜…(Publish-Subsrcibe)ã€‚å¯ä»¥ä¸¾ä¸ªåšå®¢è®¢é˜…çš„ä¾‹å­ï¼Œå½“åšä¸»å‘è¡¨æ–°æ–‡ç« çš„æ—¶å€™ï¼Œ
+å³åšä¸»çŠ¶æ€å‘ç”Ÿäº†æ”¹å˜ï¼Œé‚£äº›è®¢é˜…çš„è¯»è€…å°±ä¼šæ”¶åˆ°é€šçŸ¥ï¼Œç„¶åŽè¿›è¡Œç›¸åº”çš„åŠ¨ä½œï¼Œ
+æ¯”å¦‚åŽ»çœ‹æ–‡ç« ï¼Œæˆ–è€…æ”¶è—èµ·æ¥ã€‚åšä¸»ä¸Žè¯»è€…ä¹‹é—´å­˜åœ¨ç§ä¸€å¯¹å¤šçš„ä¾èµ–å…³ç³»*/
 
 
 class Blog{
@@ -26,8 +19,8 @@ protected :
 	string m_status;
 	list<Observer*> observer;
 public:
-	void attach(Observer* obser){ observer.push_back(obser); }
-	void remove(Observer* obser){ observer.remove(obser); }
+	void addObserver(Observer* obser){ observer.push_back(obser); }
+	void removeObserver(Observer* obser){ observer.remove(obser); }
 	virtual void setStatus(string status){ m_status = status; }
 	string getStatus(){ return m_status; }
 	void notify(){
@@ -39,22 +32,9 @@ public:
 	}
 };
 
-class BlogObserver :public Observer{
-private:
-	string m_status;
-	string m_name; //¹Û²ìÕßÐÕÃû
-	Blog *m_blog;//¹Û²ìµÄ²©¿Í
-public:
-	BlogObserver(string name,Blog *blog) :m_name(name),m_blog(blog){}
-	void update(){
-		m_status = m_blog->getStatus();
-		cout << m_name << "'s status is " << m_status << endl;
-	}
-};
-
 class CsdnBlog :public Blog{
 private:
-	string m_name; //²©Ö÷Ãû
+	string m_name; //åšä¸»å
 public:
 	CsdnBlog(string name) :m_name(name){}
 	void setStatus(string status){ m_status = m_name +" "+ status; }
@@ -62,15 +42,37 @@ public:
 };
 
 
+
+class Observer{
+public:
+	virtual void update(){};
+	virtual ~Observer(){};
+};
+
+
+class BlogObserver :public Observer{
+private:
+	string m_status;
+	string m_name; //è§‚å¯Ÿè€…å§“å
+
+public:
+	BlogObserver(string name) :m_name(name){}
+	void update(){
+		m_status = m_blog->getStatus();
+		cout << m_name << "'s status is " << m_status << endl;
+	}
+};
+
+
 int main()
 {
 	Blog *blog = new CsdnBlog("junfire");
 	Blog *blog2 = new CsdnBlog("wedgen");
-	Observer *obser = new BlogObserver("reader1",blog );
-	Observer *obser2 = new BlogObserver("reader2",blog2);
+	Observer *obser = new BlogObserver("reader1");
+	Observer *obser2 = new BlogObserver("reader2");
 
-	blog->attach(obser);
-	blog2->attach(obser2);
+	blog->addObserver(obser);
+	blog2->addObserver(obser2);
 
 	blog->setStatus("busy");
 	blog->notify();
