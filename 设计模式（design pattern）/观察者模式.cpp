@@ -63,6 +63,16 @@ public:
 	}
 };
 
+/* 模拟器里的一种写法，放置在此处，下次看到时如果能理解就理解，不能就拉到
+int BlogObserver::start()
+{
+	Blog *dc = Blog::get_instance();
+    dc->addObserver(this); 
+    
+    return 0;
+}
+*/
+
 
 int main()
 {
